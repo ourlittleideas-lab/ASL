@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#1e1e1e"/>
+  <!-- Chat bubble -->
+  <rect x="80" y="100" width="352" height="240" rx="12" ry="12" fill="#252526" stroke="#007acc" stroke-width="8"/>
+  <!-- Bubble tail -->
+  <polygon points="140,340 100,420 220,340" fill="#252526"/>
+  <line x1="140" y1="340" x2="100" y2="420" stroke="#007acc" stroke-width="8" stroke-linecap="round"/>
+  <line x1="100" y1="420" x2="220" y2="340" stroke="#1e1e1e" stroke-width="10"/>
+  <!-- Text lines (mIRC style) -->
+  <rect x="116" y="148" width="60" height="10" rx="2" fill="#dcdcaa"/>
+  <rect x="184" y="148" width="180" height="10" rx="2" fill="#d4d4d4"/>
+  <rect x="116" y="176" width="60" height="10" rx="2" fill="#4ec9b0"/>
+  <rect x="184" y="176" width="140" height="10" rx="2" fill="#d4d4d4"/>
+  <rect x="116" y="204" width="60" height="10" rx="2" fill="#dcdcaa"/>
+  <rect x="184" y="204" width="200" height="10" rx="2" fill="#d4d4d4"/>
+  <rect x="116" y="232" width="60" height="10" rx="2" fill="#c586c0"/>
+  <rect x="184" y="232" width="120" height="10" rx="2" fill="#c586c0"/>
+  <!-- "ASL?" label -->
+  <text x="256" y="290" font-family="Courier New, monospace" font-size="32" font-weight="bold" fill="#007acc" text-anchor="middle">ASL?</text>
+</svg>

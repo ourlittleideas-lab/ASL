@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1e1e1e">
+  <meta name="description" content="ASL Please? — Philippine mIRC-style real-time chat">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ASL Please?">
+  <title>ASL Please?</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ── LOADING ──────────────────────────────────────────────── -->
+  <div id="loading-screen" class="screen">
+    <p style="color:var(--text-dim);font-family:'Courier New',monospace;font-size:13px">
+      Connecting…
+    </p>
+  </div>
+
+  <!-- ── LOGIN SCREEN ─────────────────────────────────────────── -->
+  <!-- Hidden on load; app.js shows it after ban check passes -->
+  <div id="login-screen" class="screen hidden">
+    <div class="login-box">
+      <h1 class="login-title">ASL Please?</h1>
+      <p class="login-sub">Philippine real-time chat</p>
+      <div class="login-form">
+        <label for="username-input" class="login-label">Choose a username</label>
+        <input
+          id="username-input"
+          type="text"
+          maxlength="12"
+          placeholder="max 12 chars"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <p id="login-error" class="error-msg" aria-live="polite"></p>
+        <button id="login-btn">Enter Chat</button>
+      </div>
+      <p class="login-note">
+        No account needed. Username is yours while you're online.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── BAN SCREEN ──────────────────────────────────────────── -->
+  <div id="ban-screen" class="screen hidden">
+    <div class="ban-box">
+      <p class="ban-icon">⛔</p>
+      <p class="ban-msg">You are banned<br>di ka mahal ni Lord</p>
+      <p class="ban-timer-label">Ban expires in:</p>
+      <p id="ban-countdown" class="ban-countdown">--:--:--</p>
+    </div>
+  </div>
+
+  <!-- ── MAIN APP ─────────────────────────────────────────────── -->
+  <div id="app" class="hidden">
+
+    <!-- Top Bar -->
+    <header id="topbar">
+      <div class="topbar-left">
+        <button id="sidebar-toggle" class="icon-btn mobile-only" title="Channels">☰</button>
+        <span class="app-name">ASL Please?</span>
+        <span class="topbar-sep">|</span>
+        <span id="current-channel-display">#main</span>
+      </div>
+      <div class="topbar-right">
+        <span id="topbar-username" class="topbar-username"></span>
+        <button id="logout-btn" class="icon-btn" title="Logout">✕</button>
+      </div>
+    </header>
+
+    <!-- Body: sidebar + chat + tambay -->
+    <div id="body-layout">
+
+      <!-- Left Sidebar: Channel List -->
+      <aside id="left-sidebar">
+        <div class="sidebar-header">Channels</div>
+        <nav id="channel-list" role="navigation" aria-label="Channel list"></nav>
+      </aside>
+
+      <!-- Sidebar overlay (mobile tap-to-close) -->
+      <div id="sidebar-overlay" class="hidden"></div>
+
+      <!-- Main Chat Area -->
+      <main id="chat-area">
+        <div id="messages" role="log" aria-live="polite" aria-atomic="false"></div>
+        <div id="input-bar">
+          <input
+            id="message-input"
+            type="text"
+            maxlength="500"
+            placeholder="Message... (Enter to send)"
+            autocomplete="off"
+            spellcheck="true"
+            disabled
+          />
+          <button id="send-btn" disabled>Send</button>
+        </div>
+      </main>
+
+      <!-- Right Sidebar: Active Tambay -->
+      <aside id="right-sidebar">
+        <div class="sidebar-header">
+          Active Tambay
+          <button id="tambay-toggle" class="icon-btn mobile-only" title="Hide">✕</button>
+        </div>
+        <ul id="tambay-list" role="list" aria-label="Users in channel"></ul>
+      </aside>
+
+    </div><!-- /body-layout -->
+
+    <!-- Mobile Tambay Toggle (floating button) -->
+    <button id="tambay-fab" class="mobile-only" title="Active Tambay">👥</button>
+
+  </div><!-- /app -->
+
+  <!-- ── PM CONTAINER ─────────────────────────────────────────── -->
+  <!-- Floating PM windows are injected here by pm.js -->
+  <div id="pm-container" aria-label="Private messages"></div>
+
+  <!-- ── CONTEXT MENU ─────────────────────────────────────────── -->
+  <div id="context-menu" class="hidden" role="menu">
+    <div id="ctx-target-name" class="ctx-header"></div>
+    <button id="ctx-asl"  role="menuitem">💬 ASL Please?</button>
+    <button id="ctx-poke" role="menuitem">👉 Poke</button>
+    <!-- GODMODE-only — hidden by default, shown in app.js when isGodmode -->
+    <div id="ctx-godmode-section" class="hidden">
+      <div class="ctx-divider"></div>
+      <button id="ctx-kick" role="menuitem">🚫 Kick</button>
+      <button id="ctx-ban"  role="menuitem">⛔ Ban (2h)</button>
+    </div>
+  </div>
+
+  <!-- ── TOAST NOTIFICATION ───────────────────────────────────── -->
+  <div id="toast" class="hidden" aria-live="assertive"></div>
+
+  <!-- ── SCRIPTS ──────────────────────────────────────────────── -->
+  <!-- Supabase from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <!-- App data -->
+  <script src="/data/ph-locations.js"></script>
+  <!-- Config (Supabase credentials — gitignored) -->
+  <script src="/js/config.js"></script>
+  <!-- Core modules — load order matters -->
+  <script src="/js/supabase.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/presence.js"></script>
+  <script src="/js/channels.js"></script>
+  <script src="/js/chat.js"></script>
+  <script src="/js/pm.js"></script>
+  <script src="/js/poke.js"></script>
+  <script src="/js/ban.js"></script>
+  <!-- Main entry point — last -->
+  <script src="/js/app.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+      });
+    }
+  </script>
+
+</body>
+</html>

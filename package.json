@@ -1,0 +1,9 @@
+{
+  "name": "asl-please",
+  "version": "1.0.0",
+  "description": "Philippine mIRC-style real-time chat PWA",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.1"
+  }
+}
